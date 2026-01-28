@@ -13,7 +13,7 @@ from collections import defaultdict
 # --------------------------
 # INPUT FILE
 # --------------------------
-with open("deadlock.txt") as f: # (change the name of "games.txt" here to your text document)
+with open("gamesrecent.txt") as f: # (change the name of "games.txt" here to your text document)
     games = [line.strip() for line in f if line.strip()]
 
 
@@ -221,7 +221,8 @@ for player, stats in sorted(player_stats.items()):
     # im making it so mvp only prints if they have mvp stats. overwatch players have zero use for it.
     if stats['mvps'] > 0:
         print(f"    MVPs: {stats['mvps']}")
-        print(f"    MVP Ratio: {stats['mvpwins']}W / {stats['mvplosses']}L")
+        print(f"    MVP in: {winrate(stats['mvps'],stats['games']):.1f}% of games")
+        print(f"    MVP vs SVP: {stats['mvpwins']}W / {stats['mvplosses']}L")
 
 
 # print non role comps (2 or more) to avoid some clutter, 1 is reasonable if you want to change this. i just prefer less clutter and who cares about 1 game.
