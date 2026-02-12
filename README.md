@@ -1,5 +1,5 @@
 # Hero Shooter Stat Tracker
-This was designed with **Overwatch** and **Marvel Rivals** in mind.
+This was designed with **Overwatch** and **Marvel Rivals** in mind. (Currently being updated for Deadlock)
 >I'd recommend not combining the two games in your doc. If you play both have one for MR and one for Overwatch. The MVP stat is pretty much lost when you do that.
 ---
 
@@ -24,7 +24,7 @@ luke,mar/aiden,ray/kayla,dalton/win
 ```
 
 ## Marvel Rivals specifics
-If you are playing marvel rivals or want to add a mvp for whatever reason use:
+If you are playing marvel rivals, deadlock, or want to add a mvp for whatever reason use:
 ```
 luke(mvp),aiden/mar/kayla/win
 ```

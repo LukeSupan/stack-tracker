@@ -1,11 +1,10 @@
-from collections import defaultdict
+# the README explains how to use this in depth. look there first
 
 # it is very entertaining (and useful) to tweak a lot of this stuff to see different results.
 # if you read through this you should be able to make some changes. i tried to make it clear.
-# the README explains how to use this best
 
-# EACH LINE IN FILE MUST BE FORMATTED AS FOLLOWS:
-# tank,tank2/dps1,dps2/support1,support2/win(orloss)
+from collections import defaultdict
+
 # change file name below. a clear explanation and examples are in README, mvp is entirely optional
 #            |
 #            |
@@ -13,7 +12,7 @@ from collections import defaultdict
 # --------------------------
 # INPUT FILE
 # --------------------------
-with open("gamesrecent.txt") as f: # (change the name of "games.txt" here to your text document)
+with open("games.txt") as f: # (change the name of "games.txt" here to your text document)
     games = [line.strip() for line in f if line.strip()]
 
 
@@ -151,11 +150,15 @@ def role_comp_team_size(role_comp_key):
                 players.add(name)
     return len(players)
 
-    
+
 
 # --------------------------
-# AGGREGATION
+# AGGREGATION (main)
 # --------------------------
+# total process is:
+# parse_game_line -> parse_name_and_mvp for each roleon that line -> adjust winrates for players 
+# -> extract and adjust both comp types -> print (TODO based on gametype)
+
 # for each game, add relevant stats
 for line in games:
     team, result = parse_game_line(line)
@@ -167,7 +170,7 @@ for line in games:
 
         # if multiple names, split with , and run for each
         for raw in names.split(","):
-            name, is_mvp = parse_name_and_mvp(raw) # remove mvp if present
+            name, is_mvp = parse_name_and_mvp(raw) # remove mvp from name if present, save mvp status
 
             player_stats[name]["games"] += 1 # yeah man they played a game
 
@@ -186,7 +189,7 @@ for line in games:
 
 
     # for this game, adjust the comp stats
-    comp_key = tuple(sorted(extract_players(team))) # sort the set, make it a tuple so that we can use it as a key
+    comp_key = tuple(sorted(extract_players(team))) # sort the set, make it a sorted tuple so that we can use it as a key with no duplicates
     comp_stats[comp_key]["games"] += 1
 
     if result == "win":
@@ -196,7 +199,7 @@ for line in games:
 
 
     # for this game, adjust the role comp stats
-    role_comp_key = get_role_comp_key(team)
+    role_comp_key = get_role_comp_key(team) # more complicated. view the function, but it gets the key
     role_comp_stats[role_comp_key]["games"] += 1
 
     if result == "win":
@@ -209,7 +212,7 @@ for line in games:
 # --------------------------
 # PRINTING
 # --------------------------
-# print individual players stats
+# print individual players stats. if deadlock print lane instead of tank type
 for player, stats in sorted(player_stats.items()):
     print(f"\n===== {player} =====") # 5 ='s on left plus a space centers it above the following
     print(f"  Tank:    {stats['tankwins']}W / {stats['tanklosses']}L")
@@ -218,7 +221,7 @@ for player, stats in sorted(player_stats.items()):
     print(f"  Overall: {stats['wins']}W / {stats['losses']}L")
     print(f"  Winrate: {winrate(stats['wins'],stats['games']):.1f}%") # colon here is a format specifier. just set to 1 decimal point
 
-    # im making it so mvp only prints if they have mvp stats. overwatch players have zero use for it.
+    # im making it so mvp only prints if they have mvp stats for those who dont want to measure it (or if its irrelevant)
     if stats['mvps'] > 0:
         print(f"    MVPs: {stats['mvps']}")
         print(f"    MVP in: {winrate(stats['mvps'],stats['games']):.1f}% of games")
