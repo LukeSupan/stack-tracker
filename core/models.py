@@ -4,16 +4,21 @@
 # you can see most of these things on tracking sites. but you can control the data here
 # theres also all that other stuff
 
-def make_player():
-    return {
-        "tankwins": 0, "tanklosses": 0,
-        "dpswins": 0, "dpslosses": 0,
-        "supportwins": 0, "supportlosses": 0,
+def make_player(roles):
+    player = {
         "wins": 0, "losses": 0, "games": 0,
-        "mvps": 0,
-        "mvpwins": 0,
-        "mvplosses": 0
+        "mvps": 0, "mvpwins": 0, "mvplosses": 0,
+        "roles": {}
     }
+
+    # make roles for the specific game
+    for role in roles:
+        player["roles"][role] = {
+            "wins": 0, "losses": 0, "games": 0
+    }
+        
+    return player
+
 
 # make a new comp. these dont consider the roles of the team at all
 # purely just players, interesting to have. better in small datasets

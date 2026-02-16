@@ -3,11 +3,30 @@
 # if you have some python experience i would recommend doing it.
 # if you need help, ask me, if you have something you think should be added let me know.
 
-from games.hero_shooter import run as run_hero_shooter
+from games.hero_shooter import run as run_hero_shooter # overwatch, marvel rivals, anything like that
+# from games.deadlock import run as run_deadlock # could include other games with 3 lanes
+# from games.aram import run as run_aram # also includes deadlock street brawl
+GAME_RUNNERS = {
+    "heroshooter": run_hero_shooter,
+    # "deadlock": run_deadlock,
+    # "aram": run_aram
+}
+
+
 
 # THIS IS WHERE YOU CHANGE THE FILE NAME!
 with open("games.txt") as f: # (change the name of "games.txt" here to your specific text document)
-    games = [line.strip() for line in f if line.strip()]
+    lines = [line.strip() for line in f if line.strip()]
 
-# run correct tracker based on game type
-run_hero_shooter(games)
+game_name = lines[0].lower()
+games = lines[1:]
+
+# decide which game to run
+runner = GAME_RUNNERS.get(game_name)
+
+if not runner:
+    raise ValueError(f"{game_name} is not an accepted flag")
+
+# get output
+runner(games)
+
