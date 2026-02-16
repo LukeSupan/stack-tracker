@@ -1,6 +1,6 @@
 from collections import defaultdict
 from core.models import make_player, make_comp, make_role_comp
-from core.parsing import parse_name_and_mvp, parse_game_line
+from core.parsing import parse_name_and_mvp, parse_game_line_roles
 from core.config import GAME_CONFIGS
 
 # --------------------------
@@ -41,7 +41,7 @@ def get_role_comp_key(team):
     players = [] # players like above but as a list. so it matters 
 
     # we need to get member for tank, dps, and support, just like before. sort each slot alphabetically so it doesnt matter
-    for role in ("tank", "dps", "support"):
+    for role in ("role1", "role2", "role3"):
         slot = team[role] # check each slot
         if slot == "none":
             players.append(f"{role}: none") # this role is empty
@@ -84,8 +84,6 @@ def role_comp_team_size(role_comp_key):
 
 def run(games):
     player_stats = defaultdict(make_player)
-    roles = GAME_CONFIGS.get("hero_shooter") # TODO make this work
-
     comp_stats = defaultdict(make_comp)
     role_comp_stats = defaultdict(make_role_comp)
 
@@ -94,7 +92,7 @@ def run(games):
 
     # for each game, add relevant stats
     for line in games:
-        team, result = parse_game_line(line)
+        team, result = parse_game_line_roles(line)
 
         # add stats for each player from the current game
         for role, names in team.items():
@@ -148,9 +146,9 @@ def run(games):
     # print individual players stats. if deadlock print lane instead of tank type
     for player, stats in sorted(player_stats.items()):
         print(f"\n===== {player} =====") # 5 ='s on left plus a space centers it above the following
-        print(f"  Tank:    {stats['tankwins']}W / {stats['tanklosses']}L")
-        print(f"  DPS:     {stats['dpswins']}W / {stats['dpslosses']}L")
-        print(f"  Support: {stats['supportwins']}W / {stats['supportlosses']}L")
+        print(f"  Tank:    {stats['role1wins']}W / {stats['role1losses']}L")
+        print(f"  DPS:     {stats['role2wins']}W / {stats['role2losses']}L")
+        print(f"  Support: {stats['role3wins']}W / {stats['role3losses']}L")
         print(f"  Overall: {stats['wins']}W / {stats['losses']}L")
         print(f"  Winrate: {winrate(stats['wins'],stats['games']):.1f}%") # colon here is a format specifier. just set to 1 decimal point
 
