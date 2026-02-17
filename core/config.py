@@ -7,5 +7,4 @@
 GAME_CONFIGS = {
     "hero_shooter": ["Tank", "Dps", "Support"],
     "lanes": ["left", "mid", "right"],
-    "generic": ["players"]
 }

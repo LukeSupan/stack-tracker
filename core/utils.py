@@ -10,12 +10,19 @@ def winrate(wins, games):
 def extract_players(team):
     players = set()
 
-    # for each slot of value, split if needed and add to the players set
-    for slot in team.values():
-        if slot != "none":
-            for names in slot.split(","):
-                name, _, _ = parse_name_and_tags(names) # we arent using is_mvp here. hence _
-                players.add(name)
+    # for games with roles
+    if isinstance(team, dict):
+        for slot in team.values():
+            if slot != "none":
+                for names in slot.split(","):
+                    name, _, _ = parse_name_and_tags(names) # we arent using is_mvp here. hence _
+                    players.add(name)
+    # for games without roles.
+    else:
+        for name in team:
+            players.add(name)
+
+
     return players
 
 # sort the comps of a certain size by winrate (games if equal)
