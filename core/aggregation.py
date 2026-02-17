@@ -37,6 +37,27 @@ def update_player_stats(player_stats, team, result):
 
     return
 
+def update_player_stats_generic(player_stats, team, result):
+    for raw in team:
+        name, is_mvp, is_key = parse_name_and_tags(raw)
+
+        player_stats[name]["games"] += 1
+
+        if is_mvp:
+            player_stats[name]["mvps"] += 1
+        elif is_key:
+            player_stats[name]["keys"] += 1
+
+        if result == "win":
+            player_stats[name]["wins"] += 1
+            player_stats[name]["mvpwins"] += is_mvp
+            player_stats[name]["keywins"] += is_key
+        else:
+            player_stats[name]["losses"] += 1
+            player_stats[name]["mvplosses"] += is_mvp
+            player_stats[name]["keylosses"] += is_key
+
+
 
 def update_comp_stats(comp_stats, team, result):
     # for this game, adjust the comp stats

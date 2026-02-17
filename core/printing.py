@@ -68,6 +68,37 @@ def print_player_stats(player_stats, role_labels):
 
     return
 
+# print individual players stats. if deadlock print lane instead of tank type
+def print_player_stats_generic(player_stats):
+
+    section("PLAYER STATS") # this will always print, literally no matter what. if you can make it not ill give you a cookie
+
+    for player, stats in sorted(player_stats.items()):
+        print(f"\n{Style.BRIGHT}{player.center(22)}")
+        print("─" * 22)
+
+        print(f"\n  {'Overall':<{ROLE_WIDTH}} {format_record(stats['wins'], stats['losses'])}")
+        print(f"  {'Winrate':<{ROLE_WIDTH}} {winrate(stats['wins'], stats['games']):.1f}%")
+
+        # mvp usually only occurs for wins (in deadlock), in marvel rivals its both
+        # keys are only in deadlock
+        if stats["mvps"] > 0:
+            print(f"\n  {'MVPs':<{ROLE_WIDTH}} {stats['mvps']}")
+            print(f"  {'MVP Rate':<{ROLE_WIDTH}} {winrate(stats['mvps'], stats['games']):.1f}%")
+            if stats["mvplosses"] != 0:
+                    print(f"  {'MVP W/L':<{ROLE_WIDTH}} {format_record(stats['mvpwins'], stats['mvplosses'])}")
+
+        if stats["keys"] > 0:
+            print(f"\n  {'Keys':<{ROLE_WIDTH}} {stats['keys']}")
+            print(f"  {'Key Rate':<{ROLE_WIDTH}} {winrate(stats['keys'], stats['games']):.1f}%")
+            print(f"  {'Key W/L':<{ROLE_WIDTH}} {format_record(stats['keywins'], stats['keylosses'])}")
+
+        if (stats["keys"] > 0) and (stats["mvps"] > 0):
+            print(f"\n  {'MVP+Keys':<{ROLE_WIDTH}} {stats['keys'] + stats['mvps']}")
+            print(f"  {'MVP/Key rate':<{ROLE_WIDTH}} {winrate(stats['keys'] + stats['mvps'], stats['games']):.1f}%")
+
+
+    return
 
 def print_non_role_comps(comp_stats, min_games=1):
     # print non role comps (2 or more) to avoid some clutter, 1 is reasonable if you want to change this. i just prefer less clutter and who cares about 1 game.

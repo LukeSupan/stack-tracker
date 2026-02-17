@@ -15,7 +15,7 @@ def extract_players(team):
         for slot in team.values():
             if slot != "none":
                 for names in slot.split(","):
-                    name, _ = parse_name_and_mvp(names) # we arent using is_mvp here. hence _
+                    name, _, _ = parse_name_and_tags(names) # we arent using is_mvp here. hence _
                     players.add(name)
     # for games without roles.
     else:
