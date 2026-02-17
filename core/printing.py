@@ -5,7 +5,10 @@ init(autoreset=True)  # auto-reset after each print
 
 # helpers for style
 
-LINE = "─" * 55 # copied this character
+LINE = "─" * 55 # copied this character to make a line
+TOTAL_WIDTH = 35 # total line width
+ROLE_WIDTH = 10 # width of role labels
+
 
 # large sections, 3 max
 def section(title):
@@ -40,16 +43,16 @@ def print_player_stats(player_stats, role_labels):
         ]
 
         for label, w, l in role_rows:
-            print(f"  {label:<10} {format_record(w, l)}")
+            print(f"  {label:<{ROLE_WIDTH}} {format_record(w, l)}")
 
-        print(f"\n  {'Overall':<10} {format_record(stats['wins'], stats['losses'])}")
-        print(f"  {'Winrate':<10} {winrate(stats['wins'], stats['games']):.1f}%")
+        print(f"\n  {'Overall':<{ROLE_WIDTH}} {format_record(stats['wins'], stats['losses'])}")
+        print(f"  {'Winrate':<{ROLE_WIDTH}} {winrate(stats['wins'], stats['games']):.1f}%")
 
         # im making it so mvp only prints if they have mvp stats for those who dont want to measure it (or if its irrelevant)
         if stats["mvps"] > 0:
-            print(f"\n  {'MVPs':<10} {stats['mvps']}")
-            print(f"  {'MVP Rate':<10} {winrate(stats['mvps'], stats['games']):.1f}%")
-            print(f"  {'MVP W/L':<10} {format_record(stats['mvpwins'], stats['mvplosses'])}")
+            print(f"\n  {'MVPs':<{ROLE_WIDTH}} {stats['mvps']}")
+            print(f"  {'MVP Rate':<{ROLE_WIDTH}} {winrate(stats['mvps'], stats['games']):.1f}%")
+            print(f"  {'MVP W/L':<{ROLE_WIDTH}} {format_record(stats['mvpwins'], stats['mvplosses'])}")
 
     return
 
@@ -97,7 +100,7 @@ def print_non_role_comps(comp_stats, min_games=1):
         # print the comps in order
         for comp, stats in sized_comps:
             names = ", ".join(comp) # combine names for the comp
-            print(f"{names:30} {winrate(stats["wins"], stats["games"]):5.1f}% ({stats['games']} games)") # pad to reach 30 spaces, 5 spaces to have it line up nice
+            print(f"{names:{TOTAL_WIDTH}} {winrate(stats["wins"], stats["games"]):5.1f}% ({stats['games']} games)") # pad to reach 30 spaces, 5 spaces to have it line up nice
 
     return
 
@@ -158,13 +161,20 @@ def print_role_comps(role_comp_stats, role_labels, min_games=3):
             # split by /'s for roles, print title for each
             slots = role_comp.split("/")
             for slot in slots:
+
+                # add a copy of the raw text basically.
+                # if i dont do this it counts the invisible color characters. i want to keep those. they are cool...
                 if slot:
-                    print_list.append(f"{slot}")
+                    slot_text = slot
                 else:
-                    print_list.append(f"none")
+                    slot_text = "none"
+                
+                print_list.append(slot_text)
 
+            # join and print the comp
             role_comp_print = " / ".join(print_list)
-            print(f"{role_comp_print:30} {winrate(stats['wins'], stats['games']):5.1f}% ({stats['games']} games)")
+            print(f"{role_comp_print:{TOTAL_WIDTH}} {winrate(stats['wins'], stats['games']):5.1f}% ({stats['games']} games)")
 
+    print() # new line looks better
     return
             
