@@ -3,12 +3,13 @@
 # --------------------------
 # parse mvps out of names.
 # result is the name minus (mvp) if present and true (for removal) or false (for no need).
-def parse_name_and_mvp(name):
+def parse_name_and_tags(name):
     name = name.strip()
     if name.endswith("(mvp)"):
-        return name.replace("(mvp)", ""), True
-        # TODO add key here, very easy
-    return name, False
+        return name.replace("(mvp)", ""), True, False
+    elif name.endswith("(key)"):
+        return name.replace("(key)", ""), False, True
+    return name, False, False
 
 # parse the notable game stats out of the line, mvp is still included for now
 # result is dictionary of the game, showing the roles, and then a result win or loss

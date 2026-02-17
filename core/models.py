@@ -15,9 +15,14 @@ def make_player():
         "role2wins": 0, "role2losses": 0,
         "role3wins": 0, "role3losses": 0,
         "wins": 0, "losses": 0, "games": 0,
+
         "mvps": 0,
         "mvpwins": 0,
-        "mvplosses": 0
+        "mvplosses": 0,
+
+        "keys": 0,
+        "keywins": 0,
+        "keylosses": 0
     }
 
 # make a new comp. these dont consider the roles of the team at all

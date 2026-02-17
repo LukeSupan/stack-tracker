@@ -1,7 +1,7 @@
 
 from collections import defaultdict
 
-from core.parsing import parse_name_and_mvp
+from core.parsing import parse_name_and_tags
 from core.utils import extract_players, get_role_comp_key
 
 
@@ -14,22 +14,27 @@ def update_player_stats(player_stats, team, result):
 
         # if multiple names, split with , and run for each
         for raw in names.split(","):
-            name, is_mvp = parse_name_and_mvp(raw) # remove mvp from name if present, save mvp status
+            name, is_mvp, is_key = parse_name_and_tags(raw) # remove mvp from name if present, save mvp status
 
             player_stats[name]["games"] += 1 # yeah man they played a game
 
             if is_mvp:
                 player_stats[name]["mvps"] += 1
+            elif is_key:
+                player_stats[name]["keys"] += 1
 
             # im considering adding mvp tracking for each role. might be cluttered. but also i really enjoy how specific the data is. future thing anyway. if youd like to add it go ahead
             if result == "win":
                 player_stats[name][f"{role}wins"] += 1 # add 1 to role winrate
                 player_stats[name]["wins"] += 1
                 player_stats[name]["mvpwins"] += is_mvp # add 1 if true, 0 if false to mvpwins
+                player_stats[name]["keywins"] += is_key # add 1 if true, 0 if false to keywins
             else:
                 player_stats[name][f"{role}losses"] += 1 # add 1 to role winrate
                 player_stats[name]["losses"] += 1
                 player_stats[name]["mvplosses"] += is_mvp # add 1 if true, 0 if false to mvpwins
+                player_stats[name]["keylosses"] += is_key # add 1 if true, 0 if false to keylosses
+
     return
 
 

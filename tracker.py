@@ -15,7 +15,7 @@ GAME_RUNNERS = {
 
 
 # THIS IS WHERE YOU CHANGE THE FILE NAME! CHANGE 
-with open("deadlock.txt") as f:
+with open("newdeadlock.txt") as f:
     lines = [line.strip() for line in f if line.strip()]
 
 

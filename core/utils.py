@@ -1,4 +1,4 @@
-from core.parsing import parse_name_and_mvp
+from core.parsing import parse_name_and_tags
 
 # result is winrate, given wins and games, returns 0 for no games
 def winrate(wins, games):
@@ -14,7 +14,7 @@ def extract_players(team):
     for slot in team.values():
         if slot != "none":
             for names in slot.split(","):
-                name, _ = parse_name_and_mvp(names) # we arent using is_mvp here. hence _
+                name, _, _ = parse_name_and_tags(names) # we arent using is_mvp here. hence _
                 players.add(name)
     return players
 
@@ -47,7 +47,7 @@ def get_role_comp_key(team):
             clean_names = []
 
             for raw in slot.split(","):
-                name, _ = parse_name_and_mvp(raw)
+                name, _, _ = parse_name_and_tags(raw)
                 clean_names.append(name)
 
             sorted_players = sorted(clean_names)

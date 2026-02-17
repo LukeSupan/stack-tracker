@@ -48,11 +48,23 @@ def print_player_stats(player_stats, role_labels):
         print(f"\n  {'Overall':<{ROLE_WIDTH}} {format_record(stats['wins'], stats['losses'])}")
         print(f"  {'Winrate':<{ROLE_WIDTH}} {winrate(stats['wins'], stats['games']):.1f}%")
 
-        # im making it so mvp only prints if they have mvp stats for those who dont want to measure it (or if its irrelevant)
+        # mvp usually only occurs for wins (in deadlock), in marvel rivals its both
+        # keys are only in deadlock
         if stats["mvps"] > 0:
             print(f"\n  {'MVPs':<{ROLE_WIDTH}} {stats['mvps']}")
             print(f"  {'MVP Rate':<{ROLE_WIDTH}} {winrate(stats['mvps'], stats['games']):.1f}%")
-            print(f"  {'MVP W/L':<{ROLE_WIDTH}} {format_record(stats['mvpwins'], stats['mvplosses'])}")
+            if stats["mvplosses"] != 0:
+                    print(f"  {'MVP W/L':<{ROLE_WIDTH}} {format_record(stats['mvpwins'], stats['mvplosses'])}")
+
+        if stats["keys"] > 0:
+            print(f"\n  {'Keys':<{ROLE_WIDTH}} {stats['keys']}")
+            print(f"  {'Key Rate':<{ROLE_WIDTH}} {winrate(stats['keys'], stats['games']):.1f}%")
+            print(f"  {'Key W/L':<{ROLE_WIDTH}} {format_record(stats['keywins'], stats['keylosses'])}")
+
+        if (stats["keys"] > 0) and (stats["mvps"] > 0):
+            print(f"\n  {'MVP+Keys':<{ROLE_WIDTH}} {stats['keys'] + stats['mvps']}")
+            print(f"  {'MVP/Key rate':<{ROLE_WIDTH}} {winrate(stats['keys'] + stats['mvps'], stats['games']):.1f}%")
+
 
     return
 
