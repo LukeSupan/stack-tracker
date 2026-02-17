@@ -4,7 +4,7 @@
 # if you need help, ask me, if you have something you think should be added let me know.
 
 from games.hero_shooter import run as run_hero_shooter # overwatch, marvel rivals, anything like that
-from games.lanes import run as run_lanes
+from games.lanes import run as run_lanes # deadlock, league (kinda but not really)
 # from games.deadlock import run as run_deadlock # could include other games with 3 lanes TODO
 # from games.generic import run as run_generic # this is all generic games with no roles. less info but, it does the job
 GAME_RUNNERS = {
