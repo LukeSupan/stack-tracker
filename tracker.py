@@ -8,8 +8,8 @@ from games.hero_shooter import run as run_hero_shooter # overwatch, marvel rival
 # from games.generic import run as run_generic # this is all generic games with no roles. less info but, it does the job
 GAME_RUNNERS = {
     "hero_shooter": run_hero_shooter,
-    # "deadlock": run_deadlock, TODO
-    # "aram": run_aram TODO
+    # "generic": run_generic, TODO 
+    # "lanes": run_lanes, TODO
 }
 
 # THIS IS WHERE YOU CHANGE THE FILE NAME! CHANGE 

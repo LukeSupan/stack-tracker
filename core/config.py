@@ -6,5 +6,6 @@
 # used for the printing once data is computed
 GAME_CONFIGS = {
     "hero_shooter": ["tank", "dps", "support"],
-    "deadlock": ["left", "mid", "right"],
+    "lanes": ["left", "mid", "right"],
+    "generic": ["players"]
 }

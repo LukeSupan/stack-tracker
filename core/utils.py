@@ -28,41 +28,47 @@ def sized_comps_sort_key(comp_stats):
         stats["games"]
     )
 
-# TODO, MAKE MORE GENERIC
 # generate a string as a key for a role-based comp
 # gets rid of MVP, sorts alphabetically per role, then joins the roles with a /. making a final string key
-# IF YOU WANT YOUR FINAL RESULT OF THE PRINTING TO LOOK DIFFERENT. CHANGE IT HERE. BUT. YOU NEED TO ACCOUNT FOR THIS CHANGE IN role_comp_team_size BELOW
 def get_role_comp_key(team):
-    players = [] # players like above but as a list. so it matters 
+    players = []  # players like above but as a list. so order matters
 
-    # we need to get member for tank, dps, and support, just like before. sort each slot alphabetically so it doesnt matter
+    # we need to get members for role1, role2, and role3, just like before.
+    # sort each slot alphabetically so it doesn’t matter
     for role in ("role1", "role2", "role3"):
-        slot = team[role] # check each slot
+        slot = team[role]  # check each slot
+
         if slot == "none":
-            players.append(f"{role}: none") # this role is empty
+            continue  # this role is empty nothing else to do here
+
         else:
-            
-            # before adding them to the key. we need to get rid of mvp, otherwise we get duplicate comps.
+            # before adding them to the key we need to get rid of mvp,
+            # otherwise we get duplicate comps, its also ugly.
             clean_names = []
+
             for raw in slot.split(","):
                 name, _ = parse_name_and_mvp(raw)
                 clean_names.append(name)
 
             sorted_players = sorted(clean_names)
-            names = ", ".join(sorted_players) # rejoin the list back into a string with a comma (with a space to look better), basically just makes sure we have no duplicate role comp
-            players.append(f"{role}: {names}") # add the final string to its slot in the list (THIS IS WHERE YOU WOULD CHANGE THE FORMATTING. IF YOU DO ANOTHER FUNCTION (role_comp_team_size) NEEDS TO CHANGE A GOOD BIT.
-    return " / ".join(players) # make one final string by joining with
 
-# count the number of unique players in role-based comp key
+            # add the final string to its slot in the list
+            players.append(",".join(sorted_players))
+
+    # make one final string by joining with /
+    return "/".join(players)
+# result is like aiden,luke/jr/bea or aiden//jr or aiden// or //aiden or /aiden/
+
+
+# count the number of unique players in current role-based comp key
 # cant just do length like with the other because the string is formatted
 # if you change the formatting above, you are going to have to change this to account for it. sorry.
 def role_comp_team_size(role_comp_key):
-    slots = role_comp_key.split(" / ")
+    slots = role_comp_key.split("/")
     players = set()
     for slot in slots:
-        _, names = slot.split(":")
-        names = names.strip()
+        names = slot.strip()
         if names != "none":
-            for name in names.split(", "):
+            for name in names.split(","):
                 players.add(name)
     return len(players)
