@@ -20,6 +20,7 @@ def extract_players(team):
     # for games without roles.
     else:
         for name in team:
+            name, _, _ = parse_name_and_tags(name)
             players.add(name)
 
 

@@ -16,7 +16,7 @@ GAME_RUNNERS = {
 
 
 # THIS IS WHERE YOU CHANGE THE FILE NAME! CHANGE 
-with open("games.txt") as f:
+with open("street.txt") as f:
     lines = [line.strip() for line in f if line.strip()]
 
 
