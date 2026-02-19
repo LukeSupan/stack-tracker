@@ -16,6 +16,15 @@ def parse_name_and_tags(name):
 # at this point role1 - role3 could still be something like: luke,mar(mvp).
 def parse_game_line_roles(line, role_labels):
     parts = line.strip().split("/")
+
+    expected = len(role_labels) + 1
+
+    # make an error for bad input to make it easy to find.
+    if len(parts) != expected:
+        raise ValueError(
+            f"Bad input: {line}\n"
+            f"Expected {expected} sections but got {len(parts)}"
+        )
     
     *role_parts, result = parts
 
