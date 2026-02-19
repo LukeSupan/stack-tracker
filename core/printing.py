@@ -1,15 +1,20 @@
+# prints the final aggregated data
+# just in the terminal for now. may change
+
+# import functions
 from core.utils import winrate, sized_comps_sort_key, role_comp_team_size
+
+# colors and styles for printing, autoreset resets styles (thats required)
 from colorama import init, Fore, Style
+init(autoreset=True)
 
-init(autoreset=True)  # auto-reset after each print
-
-# helpers for style
-
-LINE = "─" * 55 # copied this character to make a line
+# constants for formatting
+LINE = "─" * 55 # forms a line for sections
 TOTAL_WIDTH = 35 # total line width
 ROLE_WIDTH = 10 # width of role labels
 
 
+# || FORMATTING FUNCTIONS
 # large sections, 3 max
 def section(title):
     print(f"\n{Style.BRIGHT}{Fore.MAGENTA}{title}")
@@ -25,12 +30,14 @@ def format_record(w, l):
     return f"{w}W / {l}L"
 
 
-
-# print individual players stats. if deadlock print lane instead of tank type
+# || PRINTING FUNCTIONS
+# print individual players stats formatted in terminal
+# doesn't return anything, just prints.
 def print_player_stats(player_stats, role_labels):
 
-    section("PLAYER STATS") # this will always print, literally no matter what. if you can make it not ill give you a cookie
+    section("PLAYER STATS")
 
+    # print all of the stats of this player
     for player, stats in sorted(player_stats.items()):
         print(f"\n{Style.BRIGHT}{player.center(22)}")
         print("─" * 22)
@@ -53,7 +60,7 @@ def print_player_stats(player_stats, role_labels):
         if stats["mvps"] > 0:
             print(f"\n  {'MVPs':<{ROLE_WIDTH}} {stats['mvps']}")
             print(f"  {'MVP Rate':<{ROLE_WIDTH}} {winrate(stats['mvps'], stats['games']):.1f}%")
-            if stats["mvplosses"] != 0:
+            if stats["mvplosses"] != 0: # useless stat for deadlock, so we hide it
                     print(f"  {'MVP W/L':<{ROLE_WIDTH}} {format_record(stats['mvpwins'], stats['mvplosses'])}")
 
         if stats["keys"] > 0:
@@ -65,14 +72,15 @@ def print_player_stats(player_stats, role_labels):
             print(f"\n  {'MVP+Keys':<{ROLE_WIDTH}} {stats['keys'] + stats['mvps']}")
             print(f"  {'MVP/Key rate':<{ROLE_WIDTH}} {winrate(stats['keys'] + stats['mvps'], stats['games']):.1f}%")
 
-
     return
 
-# print individual players stats. if deadlock print lane instead of tank type
+# print individual players stats formatted in terminal
+# doesn't return anything, just prints stats
 def print_player_stats_generic(player_stats):
 
-    section("PLAYER STATS") # this will always print, literally no matter what. if you can make it not ill give you a cookie
+    section("PLAYER STATS")
 
+    # print all of the stats of this player
     for player, stats in sorted(player_stats.items()):
         print(f"\n{Style.BRIGHT}{player.center(22)}")
         print("─" * 22)
@@ -85,7 +93,7 @@ def print_player_stats_generic(player_stats):
         if stats["mvps"] > 0:
             print(f"\n  {'MVPs':<{ROLE_WIDTH}} {stats['mvps']}")
             print(f"  {'MVP Rate':<{ROLE_WIDTH}} {winrate(stats['mvps'], stats['games']):.1f}%")
-            if stats["mvplosses"] != 0:
+            if stats["mvplosses"] != 0: # useless stat for deadlock, so we hide it
                     print(f"  {'MVP W/L':<{ROLE_WIDTH}} {format_record(stats['mvpwins'], stats['mvplosses'])}")
 
         if stats["keys"] > 0:
@@ -97,15 +105,14 @@ def print_player_stats_generic(player_stats):
             print(f"\n  {'MVP+Keys':<{ROLE_WIDTH}} {stats['keys'] + stats['mvps']}")
             print(f"  {'MVP/Key rate':<{ROLE_WIDTH}} {winrate(stats['keys'] + stats['mvps'], stats['games']):.1f}%")
 
-
     return
 
+# this is one of the most interesting parts. you can see who is weak. and strong i suppose
+# min games is the minimum games required to print a comp
+# doesn't return anything, just prints the comps formatted in the terminal
 def print_non_role_comps(comp_stats, min_games=1):
-    # print non role comps (2 or more) to avoid some clutter, 1 is reasonable if you want to change this. i just prefer less clutter and who cares about 1 game.
-    # this is one of the most interesting parts. you can see who is weak. and strong i suppose
-    # TODO make this print only if it should (same with ROLE BASED COMPS. this should always print though, just for if someone changes the value down there so it doesnt)
 
-    # if any of these statements are false, do not print the header. with the default value it always, but if its changed it may not.
+    # if any of these statements are false, do not print the header, it wont have anything later
     has_data = any(
         stats["games"] >= min_games
         for stats in comp_stats.values()
@@ -120,18 +127,19 @@ def print_non_role_comps(comp_stats, min_games=1):
     # print in order of smallest to largest team size first
     team_sizes = sorted({len(comp) for comp in comp_stats})
 
+    # print each of the teams for each of the sizes that need to be printed.
     for size in team_sizes:
 
         # use list comprehension to make a new list
         # gather comps of this size. you can limit the number of games needed here with stats["games"] > x
-        # result is a list of tuples: (("aiden", "luke"), {"wins": 1.....}), and so on
+        # result is a list of tuples: (("alice", "bob"), {"wins": 1.....}), and so on
         sized_comps = [
             (comp, stats) # we are adding comps and their stats to the list, output
             for comp, stats in comp_stats.items() # this gets all comps, iteration
             if len(comp) == size and stats["games"] >= min_games # get only comps of this size, filter
         ]
 
-        # if its empty, we dont print the title card and move on
+        # if this size is empty, we dont print the title card and move on
         if not sized_comps:
             continue
 
@@ -143,16 +151,13 @@ def print_non_role_comps(comp_stats, min_games=1):
         # print the comps in order
         for comp, stats in sized_comps:
             names = ", ".join(comp) # combine names for the comp
-            print(f"{names:{TOTAL_WIDTH}} {winrate(stats["wins"], stats["games"]):5.1f}% ({stats['games']} games)") # pad to reach 30 spaces, 5 spaces to have it line up nice
+            print(f"{names:{TOTAL_WIDTH}} {winrate(stats["wins"], stats["games"]):5.1f}% ({stats['games']} games)") # pad to reach TOTAL_WIDTH spaces, 5 spaces to have it line up nice
 
     return
 
-
-# TODO, make it work for deadlock, it prints the roles right now, no good, oh might be good, no not good
+# min games is the minimum games required to print a comp
+# doesn't return anything, just prints the comps formatted in the terminal
 def print_role_comps(role_comp_stats, role_labels, min_games=3):
-    # print role comps (3 or more) would be really cluttered with less
-    # i also like this one. you can see who is weak on what. gotta play more though
-    # process is super similar to above, but role_comps have a function to get the size instead.
 
     # if any of these statements are false, do not print the header
     has_data = any(
@@ -172,7 +177,7 @@ def print_role_comps(role_comp_stats, role_labels, min_games=3):
     for size in team_sizes:
         # use list comprehension to make a new list
         # gather comps of this size. you can limit the number of games needed here with stats["games"] > x
-        # result is a list of tuples: (("aiden", "luke"), {"wins": 1.....}), and so on
+        # result is a list of tuples: (("alice", "bob"), {"wins": 1.....}), and so on
         sized_role_comps = [
             (role_comp, stats) # we are adding comps and their stats to the list, output
             for role_comp, stats in role_comp_stats.items() # this gets all comps, iteration
@@ -186,8 +191,7 @@ def print_role_comps(role_comp_stats, role_labels, min_games=3):
         # sort by winrate (highest first), then by number of games (highest first as tiebreaker)
         sized_role_comps.sort(key=sized_comps_sort_key, reverse=True)
 
-
-        
+        # header is used as labels for the roles
         subsection(f"{size}-PLAYER TEAMS")
         header = " / ".join([
             f"{role_labels[0]}",
@@ -195,7 +199,7 @@ def print_role_comps(role_comp_stats, role_labels, min_games=3):
             f"{role_labels[2]}"
         ])
 
-        print(f"{Style.BRIGHT}{header:30}{Style.RESET_ALL}")
+        print(f"{Style.BRIGHT}{header:{TOTAL_WIDTH}}{Style.RESET_ALL}")
 
         # we have the comps for this size, print them nicely
         for role_comp, stats in sized_role_comps:

@@ -18,7 +18,7 @@ def run(games):
 
         update_player_stats(player_stats, team, result) # each player
         update_comp_stats(comp_stats, team, result) # each comp, regardless of role
-        update_role_comp_stats(role_comp_stats, team, result, role_labels) # specific roles makes comps unique
+        update_role_comp_stats(role_comp_stats, team, result) # specific roles makes comps unique
 
     # printing final results
     print_player_stats(player_stats, role_labels)
