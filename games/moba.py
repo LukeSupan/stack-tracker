@@ -7,12 +7,12 @@ from core.config import GAME_CONFIGS
 
 def run(games):
 
-    role_labels = GAME_CONFIGS["lanes"]
+    role_labels = GAME_CONFIGS["moba"]
     player_stats = defaultdict(lambda: make_player(role_labels))
     comp_stats = defaultdict(make_comp)
     role_comp_stats = defaultdict(make_role_comp)
 
-    # aggregate stats for side and mid lane games
+    # aggregate stats for mobas
     for line in games:
         team, result = parse_game_line_roles(line, role_labels)
 

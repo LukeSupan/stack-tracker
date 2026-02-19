@@ -42,48 +42,12 @@ def print_player_stats(player_stats, role_labels):
         print(f"\n{Style.BRIGHT}{player.center(22)}")
         print("─" * 22)
 
-        # role rows
-        role_rows = [
-            (role_labels[0], stats["role1wins"], stats["role1losses"]),
-            (role_labels[1], stats["role2wins"], stats["role2losses"]),
-            (role_labels[2], stats["role3wins"], stats["role3losses"]),
-        ]
+        # role_stats, if there are no roles (just players) skip.
+        if len(role_labels) != 1:
+            for role in role_labels:
+                role_stats = stats["roles"][role]
+                print(f"  {role:<{ROLE_WIDTH}} {format_record(role_stats['wins'], role_stats['losses'])}")
 
-        for label, w, l in role_rows:
-            print(f"  {label:<{ROLE_WIDTH}} {format_record(w, l)}")
-
-        print(f"\n  {'Overall':<{ROLE_WIDTH}} {format_record(stats['wins'], stats['losses'])}")
-        print(f"  {'Winrate':<{ROLE_WIDTH}} {winrate(stats['wins'], stats['games']):.1f}%")
-
-        # mvp usually only occurs for wins (in deadlock), in marvel rivals its both
-        # keys are only in deadlock
-        if stats["mvps"] > 0:
-            print(f"\n  {'MVPs':<{ROLE_WIDTH}} {stats['mvps']}")
-            print(f"  {'MVP Rate':<{ROLE_WIDTH}} {winrate(stats['mvps'], stats['games']):.1f}%")
-            if stats["mvplosses"] != 0: # useless stat for deadlock, so we hide it
-                    print(f"  {'MVP W/L':<{ROLE_WIDTH}} {format_record(stats['mvpwins'], stats['mvplosses'])}")
-
-        if stats["keys"] > 0:
-            print(f"\n  {'Keys':<{ROLE_WIDTH}} {stats['keys']}")
-            print(f"  {'Key Rate':<{ROLE_WIDTH}} {winrate(stats['keys'], stats['games']):.1f}%")
-            print(f"  {'Key W/L':<{ROLE_WIDTH}} {format_record(stats['keywins'], stats['keylosses'])}")
-
-        if (stats["keys"] > 0) and (stats["mvps"] > 0):
-            print(f"\n  {'MVP+Keys':<{ROLE_WIDTH}} {stats['keys'] + stats['mvps']}")
-            print(f"  {'MVP/Key rate':<{ROLE_WIDTH}} {winrate(stats['keys'] + stats['mvps'], stats['games']):.1f}%")
-
-    return
-
-# print individual players stats formatted in terminal
-# doesn't return anything, just prints stats
-def print_player_stats_generic(player_stats):
-
-    section("PLAYER STATS")
-
-    # print all of the stats of this player
-    for player, stats in sorted(player_stats.items()):
-        print(f"\n{Style.BRIGHT}{player.center(22)}")
-        print("─" * 22)
 
         print(f"\n  {'Overall':<{ROLE_WIDTH}} {format_record(stats['wins'], stats['losses'])}")
         print(f"  {'Winrate':<{ROLE_WIDTH}} {winrate(stats['wins'], stats['games']):.1f}%")
@@ -120,7 +84,6 @@ def print_non_role_comps(comp_stats, min_games=1):
 
     if not has_data:
         return
-
 
     section("\nNON-ROLE COMPS")
 
@@ -193,11 +156,7 @@ def print_role_comps(role_comp_stats, role_labels, min_games=3):
 
         # header is used as labels for the roles
         subsection(f"{size}-PLAYER TEAMS")
-        header = " / ".join([
-            f"{role_labels[0]}",
-            f"{role_labels[1]}",
-            f"{role_labels[2]}"
-        ])
+        header = " | ".join(role_labels) # use the role_labels as a header
 
         print(f"{Style.BRIGHT}{header:{TOTAL_WIDTH}}{Style.RESET_ALL}")
 
@@ -219,7 +178,7 @@ def print_role_comps(role_comp_stats, role_labels, min_games=3):
                 print_list.append(slot_text)
 
             # join and print the comp
-            role_comp_print = " / ".join(print_list)
+            role_comp_print = " | ".join(print_list)
             print(f"{role_comp_print:{TOTAL_WIDTH}} {winrate(stats['wins'], stats['games']):5.1f}% ({stats['games']} games)")
 
     print() # new line looks better

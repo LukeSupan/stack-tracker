@@ -8,17 +8,17 @@ from core.config import GAME_CONFIGS
 def run(games):
 
     role_labels = GAME_CONFIGS["hero_shooter"]
-    player_stats = defaultdict(make_player)
+    player_stats = defaultdict(lambda: make_player(role_labels))
     comp_stats = defaultdict(make_comp)
     role_comp_stats = defaultdict(make_role_comp)
 
     # aggregate stats for hero shooters
     for line in games:
-        team, result = parse_game_line_roles(line)
+        team, result = parse_game_line_roles(line, role_labels)
 
         update_player_stats(player_stats, team, result) # each player
         update_comp_stats(comp_stats, team, result) # each comp, regardless of role
-        update_role_comp_stats(role_comp_stats, team, result) # specific roles makes comps unique
+        update_role_comp_stats(role_comp_stats, team, result, role_labels) # specific roles makes comps unique
 
     # printing final results
     print_player_stats(player_stats, role_labels)

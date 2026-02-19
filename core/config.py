@@ -6,5 +6,8 @@
 # used for the printing once data is computed
 GAME_CONFIGS = {
     "hero_shooter": ["Tank", "Dps", "Support"],
-    "lanes": ["left", "mid", "right"],
+    "lanes": ["Side", "Mid"],
+    "lanes_detailed": ["Left", "Mid", "Right"],
+    "moba": ["Top", "Jungle", "Mid", "ADC", "Support"],
+    "generic": ["Player"]
 }

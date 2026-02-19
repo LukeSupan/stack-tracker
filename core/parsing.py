@@ -14,9 +14,18 @@ def parse_name_and_tags(name):
 # parse each role out of the line, individual players are not parsed out yet
 # result is dictionary of the game, showing the roles, and then a result win or loss
 # at this point role1 - role3 could still be something like: luke,mar(mvp).
-def parse_game_line_roles(line):
-    role1_players, role2_players, role3_players, result = line.strip().split("/")
-    return { "role1": role1_players, "role2": role2_players, "role3": role3_players }, result # return 2-tuple with dictionary and result
+def parse_game_line_roles(line, role_labels):
+    parts = line.strip().split("/")
+    
+    *role_parts, result = parts
+
+    # maybe add a catch here at some point TODO
+
+    # gather however many roles there are and zip the role labels to the role parts on this line
+    # result is like: left: bob | mid: alice | right: aiden
+    team = dict(zip(role_labels, role_parts))
+
+    return team, result # return 2-tuple with the dictionary and result
 
 # parse each player out of the line, individual players are also parsed out
 # result is a list of the members, and then a result win or loss

@@ -6,9 +6,10 @@ from core.utils import extract_players, get_role_comp_key
 
 # update the games values for each player on current team
 # does not return, updates player_stats directly
+# TODO add per role mvp stats, would be really cool, but probably bloated. but... so cool...
 def update_player_stats(player_stats, team, result): 
     for role, names in team.items():
-        if names == "none":
+        if names.lower() == "none":
             continue
 
         # in this slot, split to get each player for this role
@@ -24,12 +25,12 @@ def update_player_stats(player_stats, team, result):
                 player_stats[name]["keys"] += 1
 
             if result == "win":
-                player_stats[name][f"{role}wins"] += 1
+                player_stats[name]["roles"][role]["wins"] += 1
                 player_stats[name]["wins"] += 1
                 player_stats[name]["mvpwins"] += is_mvp # add 1 if true, 0 if false to mvpwins
                 player_stats[name]["keywins"] += is_key # add 1 if true, 0 if false to keywins
             else:
-                player_stats[name][f"{role}losses"] += 1
+                player_stats[name]["roles"][role]["losses"] += 1
                 player_stats[name]["losses"] += 1
                 player_stats[name]["mvplosses"] += is_mvp # add 1 if true, 0 if false to mvplosses
                 player_stats[name]["keylosses"] += is_key # add 1 if true, 0 if false to keylosses
@@ -76,8 +77,8 @@ def update_comp_stats(comp_stats, team, result):
 
 # update the current team comp, its unique based on roes
 # does not return anything, updates role_comp_stats directly
-def update_role_comp_stats(role_comp_stats, team, result):
-    role_comp_key = get_role_comp_key(team) # get key to update
+def update_role_comp_stats(role_comp_stats, team, result, role_labels):
+    role_comp_key = get_role_comp_key(team, role_labels) # get key to update
     role_comp_stats[role_comp_key]["games"] += 1
 
     if result == "win":

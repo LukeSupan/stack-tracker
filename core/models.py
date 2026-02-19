@@ -5,13 +5,18 @@
 # defaultdict will automatically intitialize new keys when they appear
 
 # players on each team
-def make_player():
+def make_player(role_labels):
     return {
-        "role1wins": 0, "role1losses": 0,
-        "role2wins": 0, "role2losses": 0,
-        "role3wins": 0, "role3losses": 0,
+        # general stats
         "wins": 0, "losses": 0, "games": 0,
 
+        # dynamic roles
+        "roles": {
+            role: {"wins": 0, "losses": 0}
+            for role in role_labels
+        },
+
+        # tags stats
         "mvps": 0,
         "mvpwins": 0,
         "mvplosses": 0,
