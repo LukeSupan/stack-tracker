@@ -2,7 +2,7 @@
 # just in the terminal for now. may change
 
 # import functions
-from core.utils import winrate, sized_comps_sort_key, role_comp_team_size
+from core.utils import winrate, comp_sort_key, role_comp_team_size, matchup_sort_key
 
 # colors and styles for printing, autoreset resets styles (thats required)
 from colorama import init, Fore, Style
@@ -109,7 +109,7 @@ def print_non_role_comps(comp_stats, min_games=1):
         subsection(f"{size}-PLAYER TEAMS")
 
         # sort by winrate, the key is winrate first, games played as backup
-        sized_comps.sort(key=sized_comps_sort_key, reverse=True)
+        sized_comps.sort(key=comp_sort_key, reverse=True)
         
         # print the comps in order
         for comp, stats in sized_comps:
@@ -152,7 +152,7 @@ def print_role_comps(role_comp_stats, role_labels, min_games=3):
             continue
 
         # sort by winrate (highest first), then by number of games (highest first as tiebreaker)
-        sized_role_comps.sort(key=sized_comps_sort_key, reverse=True)
+        sized_role_comps.sort(key=comp_sort_key, reverse=True)
 
         # header is used as labels for the roles
         subsection(f"{size}-PLAYER TEAMS")
@@ -181,6 +181,40 @@ def print_role_comps(role_comp_stats, role_labels, min_games=3):
             role_comp_print = " | ".join(print_list)
             print(f"{role_comp_print:{TOTAL_WIDTH}} {winrate(stats['wins'], stats['games']):5.1f}% ({stats['games']} games)")
 
-    print() # new line looks better
     return
             
+def print_matchups(matchup_stats, min_games=1):
+
+    # check if anything should print
+    has_data = any(
+        stats["games"] >= min_games
+        for stats in matchup_stats.values()
+    )
+
+    if not has_data:
+        return
+
+    section("MATCHUPS")
+
+    # filter usable matchups
+    filtered = [
+        (matchup, stats)
+        for matchup, stats in matchup_stats.items()
+        if stats["games"] >= min_games
+    ]
+
+    # after filtering, sort each matchup by games played
+    filtered.sort(key=lambda item: item[1]["games"], reverse=True)
+
+    # print matchups
+    for teams, stats in filtered:
+
+        # get the team names, wins, and losses for each team
+        team_names = [", ".join(team) for team in teams]
+        team_wins = [stats["wins"][team] for team in teams]
+
+        # join the team names with vs
+        print(" vs ".join(team_names))
+        print("Record:", team_wins)
+        print("Total Games:", stats["games"])
+        print()

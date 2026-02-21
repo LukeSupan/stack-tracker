@@ -5,6 +5,9 @@
 # defaultdict will automatically intitialize new keys when they appear
 
 # players on each team
+from collections import defaultdict
+
+
 def make_player(role_labels):
     return {
         # general stats
@@ -38,4 +41,12 @@ def make_comp():
 def make_role_comp():
     return {
         "wins": 0, "losses": 0, "games": 0
+    }
+
+# comps that ignore roles
+def make_matchup():
+        return {
+        "games": 0,
+        "wins": defaultdict(int),
+        "losses": defaultdict(int)
     }

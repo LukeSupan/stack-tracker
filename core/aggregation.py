@@ -87,3 +87,32 @@ def update_role_comp_stats(role_comp_stats, team, result, role_labels):
         role_comp_stats[role_comp_key]["losses"] += 1
 
     return
+
+
+# update the matchup_stats
+def update_matchup_stats(matchup_stats, teams_list, results_list):
+    # team data will be a list of tuples: (comp_key, result)
+    team_data = []
+
+    # combine list of teams with their respective results
+    # make list of 2-tuple in team_data
+    for team, result in zip(teams_list, results_list):
+        # make sure extract_players returns a list of names
+        comp_key = tuple(sorted(extract_players(team)))
+        team_data.append((comp_key, result))
+
+    # sort by comp_key for canonical matchup_key
+    team_data.sort(key=lambda x: x[0])
+
+    # matchup key is a tuple of all comp keys
+    matchup_key = tuple(comp_key for comp_key, _ in team_data)
+
+    # add games
+    matchup_stats[matchup_key]["games"] += 1
+
+    # add wins and losses
+    for comp_key, result in team_data:
+        if result.lower() == "win":
+            matchup_stats[matchup_key]["wins"][comp_key] += 1
+        else:
+            matchup_stats[matchup_key]["losses"][comp_key] += 1
