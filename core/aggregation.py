@@ -87,3 +87,33 @@ def update_role_comp_stats(role_comp_stats, team, result, role_labels):
         role_comp_stats[role_comp_key]["losses"] += 1
 
     return
+
+# update the current team comp, not caring about roles
+# does not return anything, updates comp_stats directly
+def update_matchup_stats(matchup_stats, team1, team2, result):
+    comp1_key = tuple(sorted(extract_players(team1))) # sorts a tuple of players to use as key
+    comp2_key = tuple(sorted(extract_players(team2))) # sorts a tuple of players to use as key
+    team1_won = (result == "win") # convert to boolean
+
+    # we need consistency in which team is which, this gets that
+    if comp1_key <= comp2_key:
+        matchup_key = (comp1_key, comp2_key)
+        team1_is_left = True
+    else:
+        matchup_key = (comp2_key, comp1_key)
+        team1_is_left = False
+
+    # team1's result is measured by default, so if we switch it goes to the opposite
+    if not team1_is_left:
+        team1_won = not team1_won
+
+    matchup_stats[matchup_key]["games"] += 1
+    
+    if team1_won:
+        matchup_stats[matchup_key]["team1wins"] += 1
+        matchup_stats[matchup_key]["team2losses"] += 1
+    else:
+        matchup_stats[matchup_key]["team2wins"] += 1
+        matchup_stats[matchup_key]["team1losses"] += 1
+
+    return

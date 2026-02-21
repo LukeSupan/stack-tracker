@@ -10,5 +10,6 @@ GAME_CONFIGS = {
     "lanes": ["Side", "Mid"],
     "lanes_detailed": ["Left", "Mid", "Right"],
     "moba": ["Top", "Jungle", "Mid", "ADC", "Support"],
-    "generic": ["Player"]
+    "generic": ["Player"],
+    "generic_versus": ["Player"]
 }

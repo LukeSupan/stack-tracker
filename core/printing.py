@@ -2,7 +2,7 @@
 # just in the terminal for now. may change
 
 # import functions
-from core.utils import winrate, sized_comps_sort_key, role_comp_team_size
+from core.utils import winrate, comp_sort_key, role_comp_team_size, matchup_sort_key
 
 # colors and styles for printing, autoreset resets styles (thats required)
 from colorama import init, Fore, Style
@@ -109,7 +109,7 @@ def print_non_role_comps(comp_stats, min_games=1):
         subsection(f"{size}-PLAYER TEAMS")
 
         # sort by winrate, the key is winrate first, games played as backup
-        sized_comps.sort(key=sized_comps_sort_key, reverse=True)
+        sized_comps.sort(key=comp_sort_key, reverse=True)
         
         # print the comps in order
         for comp, stats in sized_comps:
@@ -152,7 +152,7 @@ def print_role_comps(role_comp_stats, role_labels, min_games=3):
             continue
 
         # sort by winrate (highest first), then by number of games (highest first as tiebreaker)
-        sized_role_comps.sort(key=sized_comps_sort_key, reverse=True)
+        sized_role_comps.sort(key=comp_sort_key, reverse=True)
 
         # header is used as labels for the roles
         subsection(f"{size}-PLAYER TEAMS")
@@ -181,6 +181,39 @@ def print_role_comps(role_comp_stats, role_labels, min_games=3):
             role_comp_print = " | ".join(print_list)
             print(f"{role_comp_print:{TOTAL_WIDTH}} {winrate(stats['wins'], stats['games']):5.1f}% ({stats['games']} games)")
 
-    print() # new line looks better
     return
             
+def print_matchups(matchup_stats, min_games=1):
+
+    # check if anything should print
+    has_data = any(
+        stats["games"] >= min_games
+        for stats in matchup_stats.values()
+    )
+
+    if not has_data:
+        return
+
+    section("MATCHUPS")
+
+    # filter usable matchups
+    filtered = [
+        (matchup, stats)
+        for matchup, stats in matchup_stats.items()
+        if stats["games"] >= min_games
+    ]
+
+    filtered.sort(key=matchup_sort_key, reverse=True)
+
+    for (team1, team2), stats in filtered:
+
+        team1_names = ", ".join(team1)
+        team2_names = ", ".join(team2)
+
+        t1w = stats["team1wins"]
+        t2w = stats["team2wins"]
+        games = stats["games"]
+        
+        print(f"{Style.BRIGHT}{team1_names}{Style.RESET_ALL}: {t1w}W\n  VS")
+        print(f"{Style.BRIGHT}{team2_names}{Style.RESET_ALL}: {t2w}W")
+        print(f"    Total games: {games}\n")

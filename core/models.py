@@ -39,3 +39,11 @@ def make_role_comp():
     return {
         "wins": 0, "losses": 0, "games": 0
     }
+
+# comps that ignore roles
+def make_matchup():
+    return {
+        "games": 0,
+        "team1wins": 0, "team1losses": 0,
+        "team2wins": 0, "team2losses": 0
+    }
